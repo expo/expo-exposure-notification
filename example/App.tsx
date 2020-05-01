@@ -1,4 +1,7 @@
-import { sampleMethod } from "expo-exposure-notification";
+import {
+  sampleMethod,
+  getAuthorizationStatusAsync,
+} from "expo-exposure-notification";
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 
@@ -12,6 +15,14 @@ export default function App() {
         }}
       >
         <Text>call sampleMethod()</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={async () => {
+          const authorizationStatus = await getAuthorizationStatusAsync();
+          Alert.alert(`AuthorizationStatus: ${authorizationStatus}`);
+        }}
+      >
+        <Text>getAuthorizationStatusAsync()</Text>
       </TouchableOpacity>
     </View>
   );
