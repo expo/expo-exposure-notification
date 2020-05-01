@@ -4,6 +4,8 @@ Expo module and test app for the Apple / Google Exposure Notification (aka Conta
 
 ## Development usage
 
+First of, make sure you have XCode 11.5 [(beta)](https://developer.apple.com/support/beta-software/) installed. 
+
 Running `yarn build` will continuously build the TypeScript code in `./src` into `./build`.
 
 To run the package in the `./example` app use:
