@@ -1,12 +1,25 @@
 import {
   getAuthorizationStatusAsync,
-  activateAsync,
+  activateSessionAsync,
   ExposureSession,
   ExposureKey,
   ExposureRiskLevel,
+  ExposureConfiguration,
 } from "expo-exposure-notification";
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
+
+// TODO: Set some proper config here
+const exposureConfiguration: ExposureConfiguration = {
+  attenuationScores: [0, 0, 0, 0, 0, 0, 0, 0],
+  attenuationWeight: 50,
+  daysSinceLastExposureScores: [0, 0, 0, 0, 0, 0, 0, 0],
+  daysSinceLastExposureWeight: 50,
+  durationScores: [0, 0, 0, 0, 0, 0, 0, 0],
+  durationWeight: 50,
+  transitionRiskScores: [0, 0, 0, 0, 0, 0, 0, 0],
+  transmissionRiskWeight: 50,
+};
 
 const diagnosisKeys: ExposureKey[] = [
   {
@@ -34,7 +47,7 @@ export default function App() {
       <TouchableOpacity
         onPress={async () => {
           try {
-            const session = await activateAsync();
+            const session = await activateSessionAsync(exposureConfiguration);
             setSession(session);
           } catch (err) {
             Alert.alert(err.message);

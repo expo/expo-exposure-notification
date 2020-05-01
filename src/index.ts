@@ -1,6 +1,11 @@
 import ExpoExposureNotification from "./ExpoExposureNotification";
 import { ExposureSession } from "./ExposureSession";
-import { AuthorizationStatus, ExposureKey, ExposureRiskLevel } from "./types";
+import {
+  AuthorizationStatus,
+  ExposureKey,
+  ExposureRiskLevel,
+  ExposureConfiguration,
+} from "./types";
 
 /**
  * Retrieves the current authorization status of the app.
@@ -14,9 +19,19 @@ export async function getAuthorizationStatusAsync(): Promise<
 /**
  * Creates and activates a session.
  */
-export async function activateAsync(): Promise<ExposureSession> {
-  const id: string = await ExpoExposureNotification.activateAsync();
-  return new ExposureSession(id);
+export async function activateSessionAsync(
+  configuration: ExposureConfiguration
+): Promise<ExposureSession> {
+  const id: string = await ExpoExposureNotification.activateSessionAsync(
+    configuration
+  );
+  return new ExposureSession(id, configuration);
 }
 
-export { AuthorizationStatus, ExposureKey, ExposureRiskLevel, ExposureSession };
+export {
+  AuthorizationStatus,
+  ExposureKey,
+  ExposureRiskLevel,
+  ExposureSession,
+  ExposureConfiguration,
+};

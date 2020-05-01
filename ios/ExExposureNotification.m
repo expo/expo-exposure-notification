@@ -50,16 +50,19 @@ RCT_EXPORT_METHOD(getAuthorizationStatusAsync:(RCTPromiseResolveBlock)resolve
   }
 }
 
-RCT_EXPORT_METHOD(activateAsync:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(activateSessionAsync:(NSDictionary *)configuration
+                  resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
   if (@available(iOS 13.4, *)) {
     ENExposureDetectionSession *session = [ENExposureDetectionSession new];
+    session.configuration = [ExExposureNotification configurationWithJSON:configuration];
     
     __weak ExExposureNotification *weakSelf = self;
     [session activateWithCompletionHandler:^(NSError * _Nullable error) {
       __strong ExExposureNotification *strongSelf = weakSelf;
       if (error) {
+        [session invalidate];
         [ExExposureNotification rejectWithError:reject error:error];
       } else {
         if (strongSelf) {
@@ -67,6 +70,7 @@ RCT_EXPORT_METHOD(activateAsync:(RCTPromiseResolveBlock)resolve
           [strongSelf.sessions setValue:session forKey:sessionId];
           resolve(sessionId);
         } else {
+          [session invalidate];
           [ExExposureNotification rejectWithMessage:reject message:@"deallocated"];
         }
       }
@@ -76,7 +80,7 @@ RCT_EXPORT_METHOD(activateAsync:(RCTPromiseResolveBlock)resolve
   }
 }
 
-RCT_EXPORT_METHOD(invalidateAsync:(NSString *)sessionId
+RCT_EXPORT_METHOD(invalidateSessionAsync:(NSString *)sessionId
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -95,7 +99,7 @@ RCT_EXPORT_METHOD(invalidateAsync:(NSString *)sessionId
   }
 }
 
-RCT_EXPORT_METHOD(addDiagnosisKeysAsync:(NSString *)sessionId
+RCT_EXPORT_METHOD(addSessionDiagnosisKeysAsync:(NSString *)sessionId
                   keys:(NSArray<NSDictionary *> *)keys
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
@@ -105,7 +109,9 @@ RCT_EXPORT_METHOD(addDiagnosisKeysAsync:(NSString *)sessionId
     if (!session) return [ExExposureNotification rejectWithInvalidSession:reject sessionId:sessionId];
     
     NSMutableArray<ENTemporaryExposureKey *> *exposureKeys = [NSMutableArray arrayWithCapacity:keys.count];
+    
     // TODO: Convert
+    // TODO: Check for max-keys
     
     [session addDiagnosisKeys:exposureKeys completionHandler:^(NSError * _Nullable error) {
       if (error) {
@@ -144,6 +150,15 @@ API_AVAILABLE(ios(13.4)){
 + (void) rejectWithInvalidSession:(RCTPromiseRejectBlock)reject sessionId:(NSString *)sessionId
 {
   reject(@"ExpoExposureNotification", @"invalid session-id", nil);
+}
+
++ (ENExposureConfiguration *) configurationWithJSON:(NSDictionary *)json
+API_AVAILABLE(ios(13.4)){
+  ENExposureConfiguration *conf = [ENExposureConfiguration new];
+  
+  // TODO: Convert json to ENExposureConfiguration
+  
+  return conf;
 }
 
 @end

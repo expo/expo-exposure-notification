@@ -1,11 +1,13 @@
 import ExpoExposureNotification from "./ExpoExposureNotification";
-import { ExposureKey } from "./types";
+import { ExposureKey, ExposureConfiguration } from "./types";
 
 export class ExposureSession {
   public readonly id: string;
+  public readonly configuration: ExposureConfiguration;
 
-  constructor(id: string) {
+  constructor(id: string, configuration: ExposureConfiguration) {
     this.id = id;
+    this.configuration = configuration;
   }
 
   /**
@@ -27,7 +29,7 @@ export class ExposureSession {
         keyData,
       };
     });
-    return ExpoExposureNotification.addDiagnosisKeysAsync(
+    return ExpoExposureNotification.addSessionDiagnosisKeysAsync(
       this.id,
       serializableKeys
     );
@@ -37,6 +39,6 @@ export class ExposureSession {
    * Stops any outstanding operations and invalidates this object.
    */
   invalidateAsync(): Promise<void> {
-    return ExpoExposureNotification.invalidateAsync(this.id);
+    return ExpoExposureNotification.invalidateSessionAsync(this.id);
   }
 }
