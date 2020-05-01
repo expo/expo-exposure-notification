@@ -5,6 +5,7 @@
     "ios": "react-native run-ios",
     "web": "expo start --web",
     "start": "react-native start",
+    "debug:ios": "open example/ios/example.xcworkspace",
     "test": "jest"
   },
   "dependencies": {
