@@ -35,16 +35,6 @@ RCT_EXPORT_MODULE()
   }
 }
 
-RCT_EXPORT_METHOD(sampleMethod:(NSString *)stringArgument
-                  numberParameter:(nonnull NSNumber *)numberArgument
-                  resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
-{
-    // TODO: Implement some actually useful functionality
-  NSString *res = [NSString stringWithFormat: @"numberArgument: %@ stringArgument: %@", numberArgument, stringArgument];
-  resolve(res);
-}
-
 RCT_EXPORT_METHOD(getAuthorizationStatusAsync:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -93,7 +83,7 @@ RCT_EXPORT_METHOD(invalidateAsync:(NSString *)sessionId
   if (@available(iOS 13.4, *)) {
     ENExposureDetectionSession *session = [self getSession:sessionId];
     if (!session) return [ExExposureNotification rejectWithInvalidSession:reject sessionId:sessionId];
-  
+    
     // TODO: Handle any thrown errors here?
     [session invalidate];
     
@@ -113,7 +103,7 @@ RCT_EXPORT_METHOD(addDiagnosisKeysAsync:(NSString *)sessionId
   if (@available(iOS 13.4, *)) {
     ENExposureDetectionSession *session = [self getSession:sessionId];
     if (!session) return [ExExposureNotification rejectWithInvalidSession:reject sessionId:sessionId];
-  
+    
     NSMutableArray<ENTemporaryExposureKey *> *exposureKeys = [NSMutableArray arrayWithCapacity:keys.count];
     // TODO: Convert
     
@@ -132,7 +122,7 @@ RCT_EXPORT_METHOD(addDiagnosisKeysAsync:(NSString *)sessionId
 #pragma mark Helper functions
 
 - (nullable ENExposureDetectionSession *)getSession:(NSString *)sessionId
-{
+API_AVAILABLE(ios(13.4)){
   return [_sessions valueForKey:sessionId];
 }
 

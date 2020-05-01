@@ -1,5 +1,4 @@
 import {
-  sampleMethod,
   getAuthorizationStatusAsync,
   activateAsync,
   ExposureSession,
@@ -23,14 +22,6 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        onPress={async () => {
-          const res = await sampleMethod("covid", 19);
-          Alert.alert(res);
-        }}
-      >
-        <Text>call sampleMethod()</Text>
-      </TouchableOpacity>
       <TouchableOpacity
         onPress={async () => {
           const authorizationStatus = await getAuthorizationStatusAsync();
