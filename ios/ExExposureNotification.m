@@ -105,6 +105,29 @@ RCT_EXPORT_METHOD(invalidateAsync:(NSString *)sessionId
   }
 }
 
+RCT_EXPORT_METHOD(addDiagnosisKeysAsync:(NSString *)sessionId
+                  keys:(NSArray<NSDictionary *> *)keys
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+  if (@available(iOS 13.4, *)) {
+    ENExposureDetectionSession *session = [self getSession:sessionId];
+    if (!session) return [ExExposureNotification rejectWithInvalidSession:reject sessionId:sessionId];
+  
+    NSMutableArray<ENTemporaryExposureKey *> *exposureKeys = [NSMutableArray arrayWithCapacity:keys.count];
+    // TODO: Convert
+    
+    [session addDiagnosisKeys:exposureKeys completionHandler:^(NSError * _Nullable error) {
+      if (error) {
+        [ExExposureNotification rejectWithError:reject error:error];
+      } else {
+        resolve(nil);
+      }
+    }];
+  } else {
+    [ExExposureNotification rejectWithNotSupported:reject];
+  }
+}
 
 #pragma mark Helper functions
 
