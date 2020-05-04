@@ -2,9 +2,21 @@
 
 Expo module and test app for the Apple / Google Exposure Notification (fka Contact Tracing) APIs.
 
-#### N.B. This module is in development.
+## 👷‍♀️ Status
+
+*⚠️ This module is in development, is pre-release, and is not ready for you to use yet*
+
 - The JavaScript interface into the underlying OS-level Exposure Notification APIs may change in significant ways. 
-- Only the iOS Exposure Notification APIs are included at this time.
+- Some, but not all, of the iOS API is implemented.
+  - Adding session data is implemented
+  - Retrieving data is not done
+- There is no implementation for Android yet
+
+
+This version of the Expo Exposure Notification API only supports iOS. The Android spec is available but we do not believe the libraries are publicly available to developers yet. Please let us know if that changes.
+
+It is posisble that this API will change some in future versions, in particular, to support iOS and Android in a more unified way.
+
 
 ## 🤔 Why?
 
@@ -18,11 +30,6 @@ Apple and Google have indicated that they will only approve apps using this API 
 
 If you want to invest time building an Exposure Notification app, you will need to find a public health organization or government to partner with.
 
-## 👷‍♀️Status
-
-This version of the Expo Exposure Notification API only supports iOS. The Android spec is available but we do not believe it is publicly available to developers yet. Please let us know if that changes.
-
-It is posisble that this API will change some in future versions, in particular, to support iOS and Android more fully.
 
 ## Requirements
 
