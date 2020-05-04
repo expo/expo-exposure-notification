@@ -24,6 +24,15 @@ This version of the Expo Exposure Notification API only supports iOS. The Androi
 
 It is posisble that this API will change some in future versions, in particular, to support iOS and Android more fully.
 
+## Requirements
+
+Right now, you will need the following to run this:
+
+- A Mac
+- The latest Xcode Beta (currently 11.5 beta 1). [Get it here](https://xcodereleases.com/).
+- An iPhone
+- The latest iOS Beta running on your iPhone. [Sign up for the beta program here](https://beta.apple.com/sp/betaprogram/)
+
 ## 📱API
 
 The current version of the Exposure Notification spec is 1.2
