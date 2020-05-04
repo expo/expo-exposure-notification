@@ -2,12 +2,15 @@
 
 Expo module and test app for the Apple / Google Exposure Notification (fka Contact Tracing) APIs
 
+#### N.B. This module is in development.
+- The JavaScript interface into the underlying OS-level Exposure Notification APIs may change in significant ways. 
+- Only the iOS Exposure Notification APIs are included at this time.
 
 ## 🤔 Why?
 
 Apple and Google are working together on a standard Exposure Notification API that will across iOS and Android. The API will uses Bluetooth Low Energy (BLE) to implement a technique called contact tracing to track the spread of COVID-19 via approved apps from governments and health organizations.
 
-Developers have used Expo to build a number of COVID-19 symptom trackers because of the speed of deployment possible with Expo, so we want to make the E
+Developers have used Expo to build a number of COVID-19 symptom trackers because of the speed of deployment possible with Expo, so we are making this library to help Expo developers quickly build apps that use the Exposure Notifications APIs and release them on both iOS and Android as quickly as possible.
 
 ### 🚫 Restrictions on App Approval
 
@@ -22,6 +25,25 @@ This version of the Expo Exposure Notification API only supports iOS. The Androi
 It is posisble that this API will change some in future versions, in particular, to support iOS and Android more fully.
 
 ## 📱API
+
+The current version of the Exposure Notification spec is 1.2
+
+- [iOS Framework API Specification](https://covid19-static.cdn-apple.com/applications/covid19/current/static/contact-tracing/pdf/ExposureNotification-FrameworkDocumentationv1.2.pdf)
+- [Android Framework API Specification](https://www.blog.google/documents/68/Android_Exposure_Notification_API_documentation_v1.2.pdf)
+
+Apps using the Exposure Notification APIs should do the following things:
+
+- Triggers dialogs for user permission flows.
+- Let users start and stop broadcasting and scanning.
+- Provides temporary tracing keys, key start time number, and key transmission
+risk level from your internet-accessible server to the Exposure Notification APIs from Apple/Google.
+- Retrieves keys from the on-device data store and submits them to your
+internet-accessible server after a user has been confirmed by a medical provider
+as having tested positive, and the user has provided permission.
+- Shows a notification to the user with instructions on what to do next when the
+user has been exposed to another user who has tested positive for COVID-19.
+- Provide the ability to delete all collected tracing keys from the on-device
+database. This is done by calling into the Exposure Notification APIs.
 
 ### 📙 Example Usage
 
