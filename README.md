@@ -17,7 +17,7 @@ If you want to invest time building an Exposure Notification app, you will need 
 
 ## 👷‍♀️Status
 
-This version of the Expo Exposure Notification API only supports iOS. The Android spec is available but we do not believe it is publicly available to developers yet. Please let us know if that
+This version of the Expo Exposure Notification API only supports iOS. The Android spec is available but we do not believe it is publicly available to developers yet. Please let us know if that changes.
 
 It is posisble that this API will change some in future versions, in particular, to support iOS and Android more fully.
 
@@ -147,4 +147,3 @@ yarn debug:ios
 ```
 
 After adding or removing files to the `./ios` folder, you need to run `pod install` in the example-app.
-
