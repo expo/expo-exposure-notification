@@ -1,6 +1,6 @@
 # expo-exposure-notification
 
-Expo module and test app for the Apple / Google Exposure Notification (fka Contact Tracing) APIs
+Expo module and test app for the Apple / Google Exposure Notification (fka Contact Tracing) APIs.
 
 #### N.B. This module is in development.
 - The JavaScript interface into the underlying OS-level Exposure Notification APIs may change in significant ways. 
@@ -169,3 +169,8 @@ yarn debug:ios
 ```
 
 After adding or removing files to the `./ios` folder, you need to run `pod install` in the example-app.
+
+## Contact Us
+
+If you are working on an Exposure Notification app with Expo, please reach out to us by e-mailing [covid19@expo.io](mailto:covid19@expo.io), so we can help you as much as possible.
+
