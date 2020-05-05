@@ -185,7 +185,7 @@ RCT_EXPORT_METHOD(finishSessionDiagnosisKeysAsync:(NSString *)sessionId
   }
 }
 
-RCT_EXPORT_METHOD(getSessionExposureInfoWithMaximumCountAsync:(NSString *)sessionId
+RCT_EXPORT_METHOD(getSessionExposureInfoAsync:(NSString *)sessionId
                   maximumCount:(NSNumber *)maximumCount
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)

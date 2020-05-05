@@ -49,14 +49,15 @@ export class ExposureSession {
    * This method can only be called after the `finishDiagnosisKeysAsync` has
    * completed processing.
    */
-  getExposureInfoWithMaximumCountAsync(
+  getExposureInfoAsync(
     maximumCount: number
   ): Promise<{
     done: boolean;
     exposures: ExposureInfo[];
   }> {
-    return ExpoExposureNotification.getSessionExposureInfoWithMaximumCountAsync(
-      this.id
+    return ExpoExposureNotification.getSessionExposureInfoAsync(
+      this.id,
+      maximumCount
     );
   }
 
