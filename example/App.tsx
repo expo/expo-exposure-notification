@@ -66,14 +66,15 @@ export default function App() {
       // Finish adding all keys
       console.log("Finishing diagnosis keys...");
       const summary = await session?.finishDiagnosisKeysAsync();
-      console.log("Diagnosis summary: ", summary);
+      console.log("Exposure summary: ", summary);
 
-      // Retrieve all detailed exposure info
+      // Retrieve all detected exposured, in batches of
+      // 10 exposes per batch.
       let done = false;
       do {
         console.log("Getting exposure info...");
         const exposureInfo = await session.getExposureInfoAsync(10);
-        console.log("Exposures: ", exposureInfo.exposures);
+        console.log("Detected exposures: ", exposureInfo.exposures);
         done = exposureInfo.done;
       } while (!done);
 
