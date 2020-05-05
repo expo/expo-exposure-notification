@@ -94,6 +94,25 @@ export default function App() {
         disabled={!session}
         onPress={async () => {
           try {
+            const summary = await session?.finishDiagnosisKeysAsync();
+            Alert.alert(
+              "Finished add keys summary: " +
+                JSON.stringify(summary, undefined, 2)
+            );
+          } catch (err) {
+            Alert.alert(err.message);
+          }
+        }}
+      >
+        <Text style={!session && styles.disabled}>
+          ExposureSession.finishDiagnosisKeysAsync()
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        disabled={!session}
+        onPress={async () => {
+          try {
             await session?.invalidateAsync();
           } catch (err) {
             Alert.alert(err.message);
