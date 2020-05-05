@@ -9,15 +9,17 @@ import {
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 
-// TODO: Set some proper config here
+// Taken from:
+// https://developer.apple.com/documentation/exposurenotification/building_an_app_to_notify_users_of_covid-19_exposure?language=objc
 const exposureConfiguration: ExposureConfiguration = {
-  attenuationScores: [0, 0, 0, 0, 0, 0, 0, 0],
+  minimumRiskScore: 0,
+  attenuationScores: [1, 2, 3, 4, 5, 6, 7, 8],
   attenuationWeight: 50,
-  daysSinceLastExposureScores: [0, 0, 0, 0, 0, 0, 0, 0],
+  daysSinceLastExposureScores: [1, 2, 3, 4, 5, 6, 7, 8],
   daysSinceLastExposureWeight: 50,
-  durationScores: [0, 0, 0, 0, 0, 0, 0, 0],
+  durationScores: [1, 2, 3, 4, 5, 6, 7, 8],
   durationWeight: 50,
-  transitionRiskScores: [0, 0, 0, 0, 0, 0, 0, 0],
+  transmissionRiskScores: [1, 2, 3, 4, 5, 6, 7, 8],
   transmissionRiskWeight: 50,
 };
 

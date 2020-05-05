@@ -26,7 +26,15 @@ export type ExposureKey = {
 
 export type ExposureConfiguration = {
   /**
-   * It must contain 8 scores, one for each bucket, as defined here:
+   * The user’s minimum risk score.
+   * The framework excludes exposure incidents with scores lower
+   * than the value of this property. The default is no minimum.
+   */
+  minimumRiskScore?: number;
+
+  /**
+   * Scores that indicate Bluetooth signal strength.
+   * Must contain 8 scores, one for each category of signal:
    * attenuationScores[0] when Attenuation > 73.
    * attenuationScores[1] when 73 >= Attenuation > 63.
    * attenuationScores[2] when 63 >= Attenuation > 51.
@@ -39,12 +47,14 @@ export type ExposureConfiguration = {
   attenuationScores: number[];
 
   /**
-   * It must be in the range 0-100.
+   * The weight applied to a Bluetooth signal strength score.
+   * Must be in the range 0.001-100.
    */
   attenuationWeight: number;
 
   /**
-   * It must contain 8 scores, one for each bucket, as defined here:
+   * Scores that indicate the days since the user’s last exposure.
+   * Must contain 8 scores, one for each category of time:
    * daysSinceLastExposureScores[0] when Days >= 14.
    * daysSinceLastExposureScores[1] else Days >= 12.
    * daysSinceLastExposureScores[2] else Days >= 10.
@@ -57,12 +67,14 @@ export type ExposureConfiguration = {
   daysSinceLastExposureScores: number[];
 
   /**
-   * It must be in the range 0-100.
+   * The weight assigned to a score applied to the days since the user’s exposure.
+   * Must be in the range 0.001-100.
    */
   daysSinceLastExposureWeight: number;
 
   /**
-   * It must contain 8 scores, one for each bucket, as defined here:
+   * Scores that indicate the duration of a user’s exposure.
+   * Must contain 8 scores, one for each range of duration:
    * durationScores[0] when Duration == 0.
    * durationScores[1] else Duration <= 5.
    * durationScores[2] else Duration <= 10.
@@ -75,25 +87,28 @@ export type ExposureConfiguration = {
   durationScores: number[];
 
   /**
-   * It must be in the range 0-100.
+   * The weight assigned to a score applied to the duration of the user’s exposure.
+   * Must be in the range 0.001-100.
    */
   durationWeight: number;
 
   /**
-   * It must contain 8 scores, one for each bucket, as defined here:
-   * transmissionRiskScores[0] for ENRiskLevelLowest.
-   * transmissionRiskScores[1] for ENRiskLevelLow.
-   * transmissionRiskScores[2] for ENRiskLevelLowMedium.
-   * transmissionRiskScores[3] for ENRiskLevelMedium.
-   * transmissionRiskScores[4] for ENRiskLevelMediumHigh.
-   * transmissionRiskScores[5] for ENRiskLevelHigh.
-   * transmissionRiskScores[6] for ENRiskLevelVeryHigh.
-   * transmissionRiskScores[7] for ENRiskLevelHighest.
+   * Scores for the user’s estimated risk of transmission.
+   * Must contain 8 scores, one for each category of risk:
+   * transmissionRiskScores[0] for ExposureRiskLevel.LOWEST.
+   * transmissionRiskScores[1] for ExposureRiskLevel.LOW.
+   * transmissionRiskScores[2] for ExposureRiskLevel.LOW_MEDIUM.
+   * transmissionRiskScores[3] for ExposureRiskLevel.MEDIUM.
+   * transmissionRiskScores[4] for ExposureRiskLevel.MEDIUM_HIGH.
+   * transmissionRiskScores[5] for ExposureRiskLevel.HIGH.
+   * transmissionRiskScores[6] for ExposureRiskLevel.VERY_HIGH.
+   * transmissionRiskScores[7] for ExposureRiskLevel.HIGHEST.
    */
-  transitionRiskScores: number[];
+  transmissionRiskScores: number[];
 
   /**
-   * It must be in the range 0-100.
+   * The weight assigned to a score applied to the user’s risk of transmission.
+   * Must be in the range 0.001-100.
    */
   transmissionRiskWeight: number;
 };

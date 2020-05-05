@@ -3,6 +3,7 @@
 //#endif
 
 #import "EXExposureNotification.h"
+#import "EXExposureConvert.h"
 
 API_AVAILABLE(ios(13.4))
 @interface EXExposureNotification ()
@@ -56,14 +57,25 @@ RCT_EXPORT_METHOD(getAuthorizationStatusAsync:(RCTPromiseResolveBlock)resolve
   }
 }
 
-RCT_EXPORT_METHOD(activateSessionAsync:(NSDictionary *)configuration
+RCT_EXPORT_METHOD(activateSessionAsync:(NSDictionary *)jsonConfig
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
   if (@available(iOS 13.4, *)) {
-    ENExposureDetectionSession *session = [ENExposureDetectionSession new];
-    session.configuration = [EXExposureNotification configurationWithJSON:configuration];
     
+    // Convert & validate configuration
+    ENExposureConfiguration *exposureConfig;
+    @try {
+      exposureConfig = [EXExposureConvert configurationWithJSON:jsonConfig];
+    } @catch (NSException *exception) {
+      return [EXExposureNotification rejectWithException:reject exception:exception];
+    }
+    
+    // Create session
+    ENExposureDetectionSession *session = [ENExposureDetectionSession new];
+    session.configuration = exposureConfig;
+    
+    // Activate session
     __weak EXExposureNotification *weakSelf = self;
     [session activateWithCompletionHandler:^(NSError * _Nullable error) {
       __strong EXExposureNotification *strongSelf = weakSelf;
@@ -148,6 +160,11 @@ API_AVAILABLE(ios(13.4)){
   reject(@"ExpoExposureNotification", error.localizedDescription, error);
 }
 
++ (void) rejectWithException:(RCTPromiseRejectBlock)reject exception:(NSException *)exception
+{
+  reject(@"ExpoExposureNotification", exception.reason ?: exception.name, nil);
+}
+
 + (void) rejectWithNotSupported:(RCTPromiseRejectBlock)reject
 {
   reject(@"ExpoExposureNotification", @"Not supported", nil);
@@ -156,15 +173,6 @@ API_AVAILABLE(ios(13.4)){
 + (void) rejectWithInvalidSession:(RCTPromiseRejectBlock)reject sessionId:(NSString *)sessionId
 {
   reject(@"ExpoExposureNotification", @"invalid session-id", nil);
-}
-
-+ (ENExposureConfiguration *) configurationWithJSON:(NSDictionary *)json
-API_AVAILABLE(ios(13.4)){
-  ENExposureConfiguration *conf = [ENExposureConfiguration new];
-  
-  // TODO: Convert json to ENExposureConfiguration
-  
-  return conf;
 }
 
 @end
