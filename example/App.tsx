@@ -27,8 +27,7 @@ const diagnosisKeys: ExposureKey[] = [
   {
     transmissionRiskLevel: ExposureRiskLevel.LOW,
     rollingStartNumber: 0,
-    intervalNumber: 0,
-    keyData: new Uint8Array(20),
+    keyData: "SGVsbG8gd29ybGQ=",
   },
 ];
 
