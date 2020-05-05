@@ -56,7 +56,7 @@ export default function App() {
           }
         }}
       >
-        <Text>activateAsync()</Text>
+        <Text>activateSessionAsync()</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -67,11 +67,26 @@ export default function App() {
           } catch (err) {
             Alert.alert(err.message);
           }
-          setSession(null);
         }}
       >
         <Text style={!session && styles.disabled}>
           ExposureSession.addDiagnosisKeysAsync()
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        disabled={!session}
+        onPress={async () => {
+          try {
+            const maxKeyCount = await session?.getMaximumKeyCountAsync();
+            Alert.alert("Maximum key count available: " + maxKeyCount);
+          } catch (err) {
+            Alert.alert(err.message);
+          }
+        }}
+      >
+        <Text style={!session && styles.disabled}>
+          ExposureSession.getMaximumKeyCountAsync()
         </Text>
       </TouchableOpacity>
 

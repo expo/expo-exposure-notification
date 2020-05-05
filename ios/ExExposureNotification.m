@@ -57,6 +57,9 @@ RCT_EXPORT_METHOD(getAuthorizationStatusAsync:(RCTPromiseResolveBlock)resolve
   }
 }
 
+
+# pragma mark Exposure Notification Session
+
 RCT_EXPORT_METHOD(activateSessionAsync:(NSDictionary *)jsonConfig
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
@@ -142,6 +145,19 @@ RCT_EXPORT_METHOD(addSessionDiagnosisKeysAsync:(NSString *)sessionId
         resolve(nil);
       }
     }];
+  } else {
+    [EXExposureNotification rejectWithNotSupported:reject];
+  }
+}
+
+RCT_EXPORT_METHOD(getSessionMaximumKeyCount:(NSString *)sessionId
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+  if (@available(iOS 13.4, *)) {
+    ENExposureDetectionSession *session = [self getSession:sessionId];
+    if (!session) return [EXExposureNotification rejectWithInvalidSession:reject sessionId:sessionId];
+    resolve(@(session.maximumKeyCount));
   } else {
     [EXExposureNotification rejectWithNotSupported:reject];
   }
