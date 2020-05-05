@@ -1,5 +1,5 @@
 #import <React/RCTBridgeModule.h>
 
-@interface ExExposureNotification : NSObject <RCTBridgeModule>
+@interface EXExposureNotification : NSObject <RCTBridgeModule>
 
 @end

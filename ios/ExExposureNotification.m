@@ -2,17 +2,17 @@
 #import <ExposureNotification/ExposureNotification.h>
 //#endif
 
-#import "ExExposureNotification.h"
+#import "EXExposureNotification.h"
 
 API_AVAILABLE(ios(13.4))
-@interface ExExposureNotification ()
+@interface EXExposureNotification ()
 
 @property (nonatomic, strong) NSMutableDictionary<NSString *, ENExposureDetectionSession *> *sessions;
 @property (nonatomic, assign) NSInteger nextSessionId;
 
 @end
 
-@implementation ExExposureNotification
+@implementation EXExposureNotification
 
 RCT_EXPORT_MODULE()
 
@@ -52,7 +52,7 @@ RCT_EXPORT_METHOD(getAuthorizationStatusAsync:(RCTPromiseResolveBlock)resolve
       default: resolve(@"unknown"); break;
     }
   } else {
-    [ExExposureNotification rejectWithNotSupported:reject];
+    [EXExposureNotification rejectWithNotSupported:reject];
   }
 }
 
@@ -62,14 +62,14 @@ RCT_EXPORT_METHOD(activateSessionAsync:(NSDictionary *)configuration
 {
   if (@available(iOS 13.4, *)) {
     ENExposureDetectionSession *session = [ENExposureDetectionSession new];
-    session.configuration = [ExExposureNotification configurationWithJSON:configuration];
+    session.configuration = [EXExposureNotification configurationWithJSON:configuration];
     
-    __weak ExExposureNotification *weakSelf = self;
+    __weak EXExposureNotification *weakSelf = self;
     [session activateWithCompletionHandler:^(NSError * _Nullable error) {
-      __strong ExExposureNotification *strongSelf = weakSelf;
+      __strong EXExposureNotification *strongSelf = weakSelf;
       if (error) {
         [session invalidate];
-        [ExExposureNotification rejectWithError:reject error:error];
+        [EXExposureNotification rejectWithError:reject error:error];
       } else {
         if (strongSelf) {
           NSString *sessionId = [NSString stringWithFormat:@"%li", strongSelf.nextSessionId++];
@@ -77,12 +77,12 @@ RCT_EXPORT_METHOD(activateSessionAsync:(NSDictionary *)configuration
           resolve(sessionId);
         } else {
           [session invalidate];
-          [ExExposureNotification rejectWithMessage:reject message:@"deallocated"];
+          [EXExposureNotification rejectWithMessage:reject message:@"deallocated"];
         }
       }
     }];
   } else {
-    [ExExposureNotification rejectWithNotSupported:reject];
+    [EXExposureNotification rejectWithNotSupported:reject];
   }
 }
 
@@ -92,7 +92,7 @@ RCT_EXPORT_METHOD(invalidateSessionAsync:(NSString *)sessionId
 {
   if (@available(iOS 13.4, *)) {
     ENExposureDetectionSession *session = [self getSession:sessionId];
-    if (!session) return [ExExposureNotification rejectWithInvalidSession:reject sessionId:sessionId];
+    if (!session) return [EXExposureNotification rejectWithInvalidSession:reject sessionId:sessionId];
     
     // TODO: Handle any thrown errors here?
     [session invalidate];
@@ -101,7 +101,7 @@ RCT_EXPORT_METHOD(invalidateSessionAsync:(NSString *)sessionId
     [_sessions removeObjectForKey:sessionId];
     resolve(nil);
   } else {
-    [ExExposureNotification rejectWithNotSupported:reject];
+    [EXExposureNotification rejectWithNotSupported:reject];
   }
 }
 
@@ -112,7 +112,7 @@ RCT_EXPORT_METHOD(addSessionDiagnosisKeysAsync:(NSString *)sessionId
 {
   if (@available(iOS 13.4, *)) {
     ENExposureDetectionSession *session = [self getSession:sessionId];
-    if (!session) return [ExExposureNotification rejectWithInvalidSession:reject sessionId:sessionId];
+    if (!session) return [EXExposureNotification rejectWithInvalidSession:reject sessionId:sessionId];
     
     NSMutableArray<ENTemporaryExposureKey *> *exposureKeys = [NSMutableArray arrayWithCapacity:keys.count];
     
@@ -121,13 +121,13 @@ RCT_EXPORT_METHOD(addSessionDiagnosisKeysAsync:(NSString *)sessionId
     
     [session addDiagnosisKeys:exposureKeys completionHandler:^(NSError * _Nullable error) {
       if (error) {
-        [ExExposureNotification rejectWithError:reject error:error];
+        [EXExposureNotification rejectWithError:reject error:error];
       } else {
         resolve(nil);
       }
     }];
   } else {
-    [ExExposureNotification rejectWithNotSupported:reject];
+    [EXExposureNotification rejectWithNotSupported:reject];
   }
 }
 

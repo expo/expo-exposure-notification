@@ -10,10 +10,10 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.bridge.JavaScriptModule;
 
-public class ExExposureNotificationPackage implements ReactPackage {
+public class ExposureNotificationPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Arrays.<NativeModule>asList(new ExExposureNotificationModule(reactContext));
+        return Arrays.<NativeModule>asList(new ExposureNotificationModule(reactContext));
     }
 
     @Override
