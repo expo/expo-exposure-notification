@@ -35,6 +35,12 @@ RCT_EXPORT_MODULE()
   }
 }
 
++ (BOOL)requiresMainQueueSetup
+{
+  // Needed because we override init
+  return YES;
+}
+
 RCT_EXPORT_METHOD(getAuthorizationStatusAsync:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
