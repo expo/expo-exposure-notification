@@ -123,3 +123,20 @@ export type ExposureConfiguration = {
    */
   transmissionRiskWeight: number;
 };
+
+export type ExposureDetectionSummary = {
+  /**
+   * Number of days since the most recent exposure.
+   */
+  daysSinceLastExposure: number;
+
+  /**
+   * The number of keys that matched for an exposure detection.
+   */
+  matchedKeyCount: number;
+
+  /**
+   * The highest risk score of all exposure incidents.
+   */
+  maximumRiskScore: number;
+};

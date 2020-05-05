@@ -100,7 +100,15 @@
     [exposureKeys addObject:[EXExposureConvert exposureKeyWithJSON:val]];
   }
   return exposureKeys;
-  
+}
+
++ (nonnull NSDictionary*) jsonWithDetectionSummary:(nonnull ENExposureDetectionSummary *)detectionSummary
+{
+  return @{
+    @"daysSinceLastExposure": @(detectionSummary.daysSinceLastExposure),
+    @"matchedKeyCount": @(detectionSummary.matchedKeyCount),
+    @"maximumRiskScore": @(detectionSummary.maximumRiskScore),
+  };
 }
 
 @end

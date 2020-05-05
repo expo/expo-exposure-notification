@@ -8,5 +8,6 @@ API_AVAILABLE(ios(13.4))
 + (nonnull ENExposureConfiguration *) configurationWithJSON:(nonnull id)json;
 + (nonnull ENTemporaryExposureKey *) exposureKeyWithJSON:(nonnull id)json;
 + (nonnull NSArray<ENTemporaryExposureKey *> *) exposureKeysWithJSON:(nonnull id)json;
++ (nonnull NSDictionary*) jsonWithDetectionSummary:(nonnull ENExposureDetectionSummary *)detectionSummary;
 
 @end

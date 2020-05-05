@@ -5,6 +5,7 @@ import {
   ExposureKey,
   ExposureRiskLevel,
   ExposureConfiguration,
+  ExposureDetectionSummary,
 } from "./types";
 
 /**
@@ -34,4 +35,5 @@ export {
   ExposureRiskLevel,
   ExposureSession,
   ExposureConfiguration,
+  ExposureDetectionSummary,
 };

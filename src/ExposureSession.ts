@@ -1,5 +1,9 @@
 import ExpoExposureNotification from "./ExpoExposureNotification";
-import { ExposureKey, ExposureConfiguration } from "./types";
+import {
+  ExposureKey,
+  ExposureConfiguration,
+  ExposureDetectionSummary,
+} from "./types";
 
 export class ExposureSession {
   public readonly id: string;
@@ -29,6 +33,13 @@ export class ExposureSession {
    */
   getMaximumKeyCountAsync(): Promise<number> {
     return ExpoExposureNotification.getSessionMaximumKeyCountAsync(this.id);
+  }
+
+  /**
+   * Indicates that all of the available keys have been provided.
+   */
+  finishDiagnosisKeysAsync(): Promise<ExposureDetectionSummary | void> {
+    return ExpoExposureNotification.finishSessionDiagnosisKeysAsync(this.id);
   }
 
   /**
