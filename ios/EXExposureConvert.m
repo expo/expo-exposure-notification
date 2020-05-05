@@ -111,4 +111,24 @@
   };
 }
 
++ (nonnull NSDictionary*) jsonWithExposureInfo:(nonnull ENExposureInfo *)exposureInfo
+{
+  return @{
+    @"attenuationValue": @(exposureInfo.attenuationValue),
+    @"date": exposureInfo.date,
+    @"duration": @(exposureInfo.duration),
+    @"totalRiskScore": @(exposureInfo.totalRiskScore),
+    @"transmissionRiskLevel": @(exposureInfo.transmissionRiskLevel),
+  };
+}
+
++ (nonnull NSArray<NSDictionary *> *) jsonWithExposureInfoArray:(nonnull NSArray<ENExposureInfo *> *)exposureInfoArray
+{
+  NSMutableArray<NSDictionary *> *jsonArray = [NSMutableArray arrayWithCapacity:exposureInfoArray.count];
+  for (ENExposureInfo *exposureInfo in exposureInfoArray) {
+    [jsonArray addObject:[EXExposureConvert jsonWithExposureInfo:exposureInfo]];
+  }
+  return jsonArray;
+}
+
 @end

@@ -185,6 +185,30 @@ RCT_EXPORT_METHOD(finishSessionDiagnosisKeysAsync:(NSString *)sessionId
   }
 }
 
+RCT_EXPORT_METHOD(getSessionExposureInfoWithMaximumCountAsync:(NSString *)sessionId
+                  maximumCount:(NSNumber *)maximumCount
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+  if (@available(iOS 13.4, *)) {
+    ENExposureDetectionSession *session = [self getSession:sessionId];
+    if (!session) return [EXExposureNotification rejectWithInvalidSession:reject sessionId:sessionId];
+    
+    [session getExposureInfoWithMaximumCount:maximumCount.unsignedIntegerValue completionHandler:^(NSArray<ENExposureInfo *> * _Nullable exposures, BOOL done, NSError * _Nullable error) {
+      if (error) {
+        [EXExposureNotification rejectWithError:reject error:error];
+      } else {
+        resolve(@{
+          @"done": @(done),
+          @"exposures": [EXExposureConvert jsonWithExposureInfoArray:exposures ?: @[]]
+                });
+      }
+    }];
+  } else {
+    [EXExposureNotification rejectWithNotSupported:reject];
+  }
+}
+
 #pragma mark Helper functions
 
 - (nullable ENExposureDetectionSession *)getSession:(NSString *)sessionId

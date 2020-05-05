@@ -140,3 +140,36 @@ export type ExposureDetectionSummary = {
    */
   maximumRiskScore: number;
 };
+
+/**
+ * The risk of transmission associated with the person a key came from.
+ */
+export type ExposureInfo = {
+  /**
+   * The signal strength of the peer device at the time of the exposure.
+   * The attenuation is the Reported Transmit Power - Measured RSSI.
+   */
+  attenuationValue: number;
+
+  /**
+   * The date the exposure occurred.
+   */
+  date: Date;
+
+  /**
+   * The length of time in minutes that the contact was in proximity to the user.
+   * The minimum duration is 5 minutes. Other valid values are 10, 15, 20, 25,
+   * and 30. A duration value caps at 30 minutes.
+   */
+  duration: number;
+
+  /**
+   * The total risk calculated for an exposure incident.
+   */
+  totalRiskScore: number;
+
+  /**
+   * The transmission risk associated with a diagnosis key.
+   */
+  transmissionRiskLevel: number;
+};
