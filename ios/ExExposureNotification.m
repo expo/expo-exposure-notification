@@ -126,11 +126,15 @@ RCT_EXPORT_METHOD(addSessionDiagnosisKeysAsync:(NSString *)sessionId
     ENExposureDetectionSession *session = [self getSession:sessionId];
     if (!session) return [EXExposureNotification rejectWithInvalidSession:reject sessionId:sessionId];
     
-    NSMutableArray<ENTemporaryExposureKey *> *exposureKeys = [NSMutableArray arrayWithCapacity:keys.count];
+    // Convert keys from json to ENTemporaryExposureKey
+    NSArray<ENTemporaryExposureKey *> *exposureKeys = [EXExposureConvert exposureKeysWithJSON:keys];
     
-    // TODO: Convert
-    // TODO: Check for max-keys
+    // Make sure the max-count is not exceeded
+    if (exposureKeys.count > session.maximumKeyCount) {
+      return [EXExposureNotification rejectWithMessage:reject message:@"Maximum key count reached"];
+    }
     
+    // Add diagnosis keys
     [session addDiagnosisKeys:exposureKeys completionHandler:^(NSError * _Nullable error) {
       if (error) {
         [EXExposureNotification rejectWithError:reject error:error];

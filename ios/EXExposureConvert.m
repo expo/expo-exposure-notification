@@ -2,25 +2,37 @@
 
 @implementation EXExposureConvert
 
-+ (nonnull NSArray<NSNumber *> *)numberArrayWithJSON:(nonnull NSDictionary *)json key:(nonnull NSString *)key count:(NSUInteger)count
++ (id)fieldWithJSON:(id)json key:(nonnull NSString *)key classType:(Class)classType
 {
-  NSArray<NSNumber *> *array = json[key];
-  if (!array) {
+  id val = json[key];
+  if (!val) {
     @throw [NSException
             exceptionWithName:@"FieldNotFoundException"
             reason:[NSString stringWithFormat:@"Field '%@' not found", key]
             userInfo:nil];
   }
+  if (![val isKindOfClass:classType]) {
+     @throw [NSException
+             exceptionWithName:@"InvalidTypeException"
+             reason:[NSString stringWithFormat:@"Field is not a %@ '%@'", NSStringFromClass(classType), key]
+             userInfo:nil];
+   }
+  return val;
+}
+
++ (nonnull NSArray<NSNumber *> *)numberArrayWithJSON:(id)json key:(nonnull NSString *)key count:(NSUInteger)count
+{
+  NSArray<NSNumber *> *array = [EXExposureConvert fieldWithJSON:json key:key classType:[NSArray class]];
   if (array.count != count) {
     @throw [NSException
-    exceptionWithName:@"InvalidFieldTypeException"
+    exceptionWithName:@"InvalidTypeException"
     reason:[NSString stringWithFormat:@"Field '%@' should be an array of exact %lu elements", key, count]
     userInfo:nil];
   }
   for (NSNumber *val in array) {
     if (![val isKindOfClass:[NSNumber class]]) {
       @throw [NSException
-              exceptionWithName:@"InvalidFieldTypeException"
+              exceptionWithName:@"InvalidTypeException"
               reason:[NSString stringWithFormat:@"Field '%@' should be an array of numbers", key]
               userInfo:nil];
     }
@@ -29,26 +41,21 @@
   return array;
 }
 
-+ (double)doubleWithJSON:(NSDictionary *)json key:(nonnull NSString *)key
++ (double)doubleWithJSON:(id)json key:(nonnull NSString *)key
 {
-  NSNumber *val = json[key];
-  if (!val) {
-    @throw [NSException
-            exceptionWithName:@"FieldNotFoundException"
-            reason:[NSString stringWithFormat:@"Field not found '%@'", key]
-            userInfo:nil];
-  }
-  if (![val isKindOfClass:[NSNumber class]]) {
-    @throw [NSException
-            exceptionWithName:@"InvalidFieldTypeException"
-            reason:[NSString stringWithFormat:@"Field is not a number '%@'", key]
-            userInfo:nil];
-  }
-  return val.doubleValue;
+  NSNumber *num = [EXExposureConvert fieldWithJSON:json key:key classType:[NSNumber class]];
+  return num.doubleValue;
 }
 
-+ (nonnull ENExposureConfiguration *) configurationWithJSON:(nonnull NSDictionary *)json
-API_AVAILABLE(ios(13.4)){
++ (nonnull NSData *)dataWithJSON:(id)json key:(nonnull NSString *)key
+{
+  NSString *base64 = [EXExposureConvert fieldWithJSON:json key:key classType:[NSString class]];
+  NSData *data = [[NSData alloc]initWithBase64EncodedString:base64 options:0];
+  return data;
+}
+
++ (nonnull ENExposureConfiguration *) configurationWithJSON:(nonnull id)json
+{
   ENExposureConfiguration *conf = [ENExposureConfiguration new];
   
   conf.attenuationScores = [EXExposureConvert numberArrayWithJSON:json key:@"attenuationScores" count:8];
@@ -65,6 +72,35 @@ API_AVAILABLE(ios(13.4)){
   }
   
   return conf;
+}
+
++ (nonnull ENTemporaryExposureKey *) exposureKeyWithJSON:(nonnull id)json
+{
+  ENTemporaryExposureKey *exposureKey = [ENTemporaryExposureKey new];
+  
+  exposureKey.transmissionRiskLevel = (ENRiskLevel) [EXExposureConvert doubleWithJSON:json key:@"transmissionRiskLevel"];
+  exposureKey.keyData = [EXExposureConvert dataWithJSON:json key:@"keyData"];
+  exposureKey.rollingStartNumber = (ENIntervalNumber) [EXExposureConvert doubleWithJSON:json key:@"rollingStartNumber"];
+  
+  return exposureKey;
+}
+
++ (nonnull NSArray<ENTemporaryExposureKey *> *) exposureKeysWithJSON:(nonnull id)json
+{
+  NSArray<NSDictionary *> *array = json;
+  if (![array isKindOfClass:[NSArray class]]) {
+    @throw [NSException
+            exceptionWithName:@"InvalidTypeException"
+            reason:[NSString stringWithFormat:@"Value is not a array"]
+            userInfo:nil];
+  }
+  
+  NSMutableArray<ENTemporaryExposureKey *> *exposureKeys = [NSMutableArray arrayWithCapacity:array.count];
+  for (id val in array) {
+    [exposureKeys addObject:[EXExposureConvert exposureKeyWithJSON:val]];
+  }
+  return exposureKeys;
+  
 }
 
 @end

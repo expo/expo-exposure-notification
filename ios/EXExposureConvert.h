@@ -2,8 +2,11 @@
 #import <ExposureNotification/ExposureNotification.h>
 //#endif
 
+API_AVAILABLE(ios(13.4))
 @interface EXExposureConvert : NSObject
 
-+ (ENExposureConfiguration *) configurationWithJSON:(NSDictionary *)json;
++ (nonnull ENExposureConfiguration *) configurationWithJSON:(nonnull id)json;
++ (nonnull ENTemporaryExposureKey *) exposureKeyWithJSON:(nonnull id)json;
++ (nonnull NSArray<ENTemporaryExposureKey *> *) exposureKeysWithJSON:(nonnull id)json;
 
 @end

@@ -18,10 +18,21 @@ export const ExposureRiskLevel = {
 };
 
 export type ExposureKey = {
+  /**
+   * The risk of transmission associated with the person a key came from.
+   */
   transmissionRiskLevel: number;
-  keyData: object;
+
+  /**
+   * The temporary exposure key information.
+   * Encoded as base-64.
+   */
+  keyData: string;
+
+  /**
+   * A number that indicates when a key’s rolling period started.
+   */
   rollingStartNumber: number;
-  intervalNumber: number;
 };
 
 export type ExposureConfiguration = {
