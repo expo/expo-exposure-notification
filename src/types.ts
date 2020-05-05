@@ -4,6 +4,13 @@ export type AuthorizationStatus =
   | "restricted"
   | "unknown";
 
+export type ExposureNotificationStatus =
+  | "active"
+  | "bluetoothOff"
+  | "disabled"
+  | "restricted"
+  | "unknown";
+
 // https://developer.apple.com/documentation/exposurenotification/enrisklevel?language=objc
 export const ExposureRiskLevel = {
   INVALID: 0,

@@ -8,6 +8,7 @@
 API_AVAILABLE(ios(13.4))
 @interface EXExposureNotification ()
 
+@property (nonatomic, strong) ENManager *manager;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, ENExposureDetectionSession *> *sessions;
 @property (nonatomic, assign) NSInteger nextSessionId;
 
@@ -20,6 +21,9 @@ RCT_EXPORT_MODULE()
 - (instancetype)init
 {
   if (self = [super init]) {
+    if (@available(iOS 13.4, *)) {
+      _manager = [ENManager new];
+    }
     _sessions = [NSMutableDictionary new];
     _nextSessionId = 1;
   }
@@ -33,6 +37,10 @@ RCT_EXPORT_MODULE()
       [session invalidate];
     }
     _sessions = nil;
+    if (_manager) {
+      [_manager invalidate];
+      _manager = nil;
+    }
   }
 }
 
@@ -41,6 +49,44 @@ RCT_EXPORT_MODULE()
   // Needed because we override init
   return YES;
 }
+
+
+# pragma mark Exposure Notification Manager
+
+RCT_EXPORT_METHOD(setExposureNotificationEnabledAsync:(BOOL)enabled
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+  if (@available(iOS 13.4, *)) {
+    [_manager setExposureNotificationEnabled:enabled completionHandler:^(NSError * _Nullable error) {
+      if (error) {
+        [EXExposureNotification rejectWithError:reject error:error];
+      } else {
+        resolve(nil);
+      }
+    }];
+  } else {
+    [EXExposureNotification rejectWithNotSupported:reject];
+  }
+}
+
+RCT_EXPORT_METHOD(getExposureNotificationStatusAsync:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+  if (@available(iOS 13.4, *)) {
+    switch (_manager.exposureNotificationStatus) {
+      case ENStatusActive: resolve(@"active"); break;
+      case ENStatusBluetoothOff: resolve(@"bluetoothOff"); break;
+      case ENStatusDisabled: resolve(@"disabled"); break;
+      case ENStatusRestricted: resolve(@"restricted"); break;
+      case ENStatusUnknown:
+      default: resolve(@"unknown"); break;
+    }
+  } else {
+    [EXExposureNotification rejectWithNotSupported:reject];
+  }
+}
+
 
 RCT_EXPORT_METHOD(getAuthorizationStatusAsync:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)

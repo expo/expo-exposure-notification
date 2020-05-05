@@ -2,6 +2,7 @@ import ExpoExposureNotification from "./ExpoExposureNotification";
 import { ExposureSession } from "./ExposureSession";
 import {
   AuthorizationStatus,
+  ExposureNotificationStatus,
   ExposureKey,
   ExposureRiskLevel,
   ExposureConfiguration,
@@ -30,8 +31,29 @@ export async function activateSessionAsync(
   return new ExposureSession(id, configuration);
 }
 
+/**
+ * Enables or disables exposure notification.
+ * If the user hasn’t authorized exposure notification,
+ * this method displays a user dialog requesting consent.
+ */
+export function setExposureNotificationEnabledAsync(
+  enabled: boolean
+): Promise<void> {
+  return ExpoExposureNotification.setExposureNotificationEnabledAsync(enabled);
+}
+
+/**
+ * Gets the status of exposure notifications.
+ */
+export function getExposureNotificationStatusAsync(): Promise<
+  ExposureNotificationStatus
+> {
+  return ExpoExposureNotification.getExposureNotificationStatusAsync();
+}
+
 export {
   AuthorizationStatus,
+  ExposureNotificationStatus,
   ExposureKey,
   ExposureRiskLevel,
   ExposureSession,
