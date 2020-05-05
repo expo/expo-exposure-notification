@@ -34,91 +34,170 @@ const diagnosisKeys: ExposureKey[] = [
 export default function App() {
   const [session, setSession] = React.useState<ExposureSession | null>(null);
 
+  async function runFullExposureDetectionWorkflow() {
+    let session: ExposureSession;
+    try {
+      // Activate session with configuration
+      console.log("Running exposure detection workflow...");
+      session = await activateSessionAsync(exposureConfiguration);
+      console.log(
+        "Session activated with configuration:",
+        session.configuration
+      );
+
+      // Asynchronously add all the keys
+      console.log("Adding diagnosis keys...");
+      let addedKeysCount = 0;
+      while (addedKeysCount < diagnosisKeys.length) {
+        const maxKeyCount = await session.getMaximumKeyCountAsync();
+        if (!maxKeyCount) {
+          // When max-count reached, wait a bit and check again
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        } else {
+          const keysToAdd = diagnosisKeys.slice(
+            addedKeysCount,
+            Math.min(diagnosisKeys.length, addedKeysCount + maxKeyCount)
+          );
+          session.addDiagnosisKeysAsync(keysToAdd);
+          addedKeysCount += keysToAdd.length;
+        }
+      }
+
+      // Finish adding all keys
+      console.log("Finishing diagnosis keys...");
+      const summary = await session?.finishDiagnosisKeysAsync();
+      console.log("Diagnosis summary: ", summary);
+
+      // Retrieve all detailed exposure info
+      let done = false;
+      do {
+        console.log("Getting exposure info...");
+        const exposureInfo = await session.getExposureInfoAsync(10);
+        console.log("Exposures: ", exposureInfo.exposures);
+        done = exposureInfo.done;
+      } while (!done);
+
+      // All done
+      console.log("Completed exposure detection workflow");
+    } catch (err) {
+      console.log("ERROR: ", err.message);
+      Alert.alert(err.message);
+    }
+    // @ts-ignore
+    session?.invalidateAsync();
+  }
+
+  async function _getAuthorizationStatusAsync() {
+    try {
+      const authorizationStatus = await getAuthorizationStatusAsync();
+      Alert.alert(`AuthorizationStatus: ${authorizationStatus}`);
+    } catch (err) {
+      Alert.alert("Error", err.message);
+    }
+  }
+
+  async function _activateSessionAsync() {
+    try {
+      const session = await activateSessionAsync(exposureConfiguration);
+      Alert.alert(
+        `Session has been activated with configuration: ${JSON.stringify(
+          session.configuration,
+          undefined,
+          2
+        )}`
+      );
+      setSession(session);
+    } catch (err) {
+      Alert.alert("Error", err.message);
+    }
+  }
+
+  async function addDiagnosisKeysAsync() {
+    try {
+      if (!session) throw new Error("No session");
+      await session.addDiagnosisKeysAsync(diagnosisKeys);
+    } catch (err) {
+      Alert.alert("Error", err.message);
+    }
+  }
+
+  async function getMaximumKeyCountAsync() {
+    try {
+      if (!session) throw new Error("No session");
+      const maxKeyCount = await session.getMaximumKeyCountAsync();
+      Alert.alert("Maximum key count available: " + maxKeyCount);
+    } catch (err) {
+      Alert.alert("Error", err.message);
+    }
+  }
+
+  async function finishDiagnosisKeysAsync() {
+    try {
+      if (!session) throw new Error("No session");
+      const summary = await session.finishDiagnosisKeysAsync();
+      Alert.alert(
+        "Finished add keys summary: " + JSON.stringify(summary, undefined, 2)
+      );
+    } catch (err) {
+      Alert.alert("Error", err.message);
+    }
+  }
+
+  async function getExposureInfoAsync() {
+    try {
+      if (!session) throw new Error("No session");
+      const { exposures } = await session.getExposureInfoAsync(100);
+      Alert.alert("Exposure info: " + JSON.stringify(exposures, undefined, 2));
+    } catch (err) {
+      Alert.alert("Error", err.message);
+    }
+  }
+
+  async function invalidateAsync() {
+    try {
+      if (!session) throw new Error("No session");
+      await session.invalidateAsync();
+    } catch (err) {
+      Alert.alert("Error", err.message);
+    }
+    setSession(null);
+  }
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        onPress={async () => {
-          const authorizationStatus = await getAuthorizationStatusAsync();
-          Alert.alert(`AuthorizationStatus: ${authorizationStatus}`);
-        }}
-      >
+      <Text style={styles.section}>EXPOSURE DETECTION</Text>
+      <TouchableOpacity onPress={runFullExposureDetectionWorkflow}>
+        <Text>Run full exposure detection workflow</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.section}>API CALLS</Text>
+      <TouchableOpacity onPress={_getAuthorizationStatusAsync}>
         <Text>getAuthorizationStatusAsync()</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={async () => {
-          try {
-            const session = await activateSessionAsync(exposureConfiguration);
-            setSession(session);
-          } catch (err) {
-            Alert.alert(err.message);
-          }
-        }}
-      >
+      <TouchableOpacity onPress={_activateSessionAsync}>
         <Text>activateSessionAsync()</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
-        disabled={!session}
-        onPress={async () => {
-          try {
-            await session?.addDiagnosisKeysAsync(diagnosisKeys);
-          } catch (err) {
-            Alert.alert(err.message);
-          }
-        }}
-      >
+      <TouchableOpacity onPress={addDiagnosisKeysAsync}>
         <Text style={!session && styles.disabled}>
           ExposureSession.addDiagnosisKeysAsync()
         </Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
-        disabled={!session}
-        onPress={async () => {
-          try {
-            const maxKeyCount = await session?.getMaximumKeyCountAsync();
-            Alert.alert("Maximum key count available: " + maxKeyCount);
-          } catch (err) {
-            Alert.alert(err.message);
-          }
-        }}
-      >
+      <TouchableOpacity onPress={getMaximumKeyCountAsync}>
         <Text style={!session && styles.disabled}>
           ExposureSession.getMaximumKeyCountAsync()
         </Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
-        disabled={!session}
-        onPress={async () => {
-          try {
-            const summary = await session?.finishDiagnosisKeysAsync();
-            Alert.alert(
-              "Finished add keys summary: " +
-                JSON.stringify(summary, undefined, 2)
-            );
-          } catch (err) {
-            Alert.alert(err.message);
-          }
-        }}
-      >
+      <TouchableOpacity onPress={finishDiagnosisKeysAsync}>
         <Text style={!session && styles.disabled}>
           ExposureSession.finishDiagnosisKeysAsync()
         </Text>
       </TouchableOpacity>
-
-      <TouchableOpacity
-        disabled={!session}
-        onPress={async () => {
-          try {
-            await session?.invalidateAsync();
-          } catch (err) {
-            Alert.alert(err.message);
-          }
-          setSession(null);
-        }}
-      >
+      <TouchableOpacity onPress={getExposureInfoAsync}>
+        <Text style={!session && styles.disabled}>
+          ExposureSession.getExposureInfoAsync()
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={invalidateAsync}>
         <Text style={!session && styles.disabled}>
           ExposureSession.invalidateAsync()
         </Text>
@@ -136,5 +215,12 @@ const styles = StyleSheet.create({
   },
   disabled: {
     color: "#999999",
+  },
+  section: {
+    fontSize: 13,
+    opacity: 0.5,
+    marginTop: 20,
+    marginBottom: 5,
+    fontWeight: "300",
   },
 });
