@@ -28,7 +28,7 @@ export class ExposureSession {
    * but have not yet completed processing.
    */
   getMaximumKeyCountAsync(): Promise<number> {
-    return ExpoExposureNotification.getSessionMaximumKeyCount(this.id);
+    return ExpoExposureNotification.getSessionMaximumKeyCountAsync(this.id);
   }
 
   /**

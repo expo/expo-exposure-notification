@@ -150,7 +150,7 @@ RCT_EXPORT_METHOD(addSessionDiagnosisKeysAsync:(NSString *)sessionId
   }
 }
 
-RCT_EXPORT_METHOD(getSessionMaximumKeyCount:(NSString *)sessionId
+RCT_EXPORT_METHOD(getSessionMaximumKeyCountAsync:(NSString *)sessionId
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
